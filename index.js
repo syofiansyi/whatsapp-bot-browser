@@ -1,19 +1,14 @@
 const express = require('express');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
-const path = require('path');
-const { exec } = require('child_process');  // Menambahkan child_process untuk mengeksekusi perintah PowerShell
+const serverless = require('serverless-http'); // Tambahkan serverless-http
 
-// Create an Express server
 const app = express();
 const port = 3000;
 
-// Serve static files (for example, CSS or JS for the frontend)
-app.use(express.static('public'));
-
 // Inisialisasi Client
 const client = new Client({
-    authStrategy: new LocalAuth() // Simpan sesi login
+    authStrategy: new LocalAuth()
 });
 
 let qrCodeUrl = ''; // To store the QR code URL
@@ -44,7 +39,6 @@ client.on('message', message => {
     console.log(`Pesan diterima: ${message.body}`);
     console.log('Pengirim:', message.author);
     console.log('Grup ID:', message.from);
-    // Simpan pesan ke array untuk ditampilkan di browser
     if (message.from.includes('@g.us')) {
         console.log(`Pesan diterima dari grup dengan ID: ${message.from}`);
         if (message.from === targetGroupId) {
@@ -59,7 +53,7 @@ client.on('message', message => {
     }
 });
 
-// Endpoint to serve the QR Code page
+// Endpoint untuk menampilkan QR Code
 app.get('/', (req, res) => {
     if (!qrCodeUrl) {
         return res.send('<h1>QR Code belum tersedia</h1><p>Bot masih menunggu untuk menghasilkan QR Code...</p>');
@@ -96,23 +90,14 @@ app.post('/logout', (req, res) => {
     if (client) {
         client.destroy().then(() => {
             console.log('Sesi WhatsApp berhasil dihentikan');
-            
-            // Eksekusi perintah PowerShell untuk menghapus folder .wwebjs_auth
-            exec('powershell Remove-Item -Recurse -Force .wwebjs_auth', (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`Error executing PowerShell command: ${error}`);
-                    return res.send('Gagal menghapus sesi, coba lagi.');
-                }
-                console.log('Folder .wwebjs_auth berhasil dihapus');
-                res.send(`
-                    <html>
-                        <body>
-                            <h1>Sesi dihentikan!</h1>
-                            <p>Bot berhasil logout dari WhatsApp, dan sesi telah dihapus. <a href="/">Kembali ke QR Code</a></p>
-                        </body>
-                    </html>
-                `);
-            });
+            res.send(`
+                <html>
+                    <body>
+                        <h1>Sesi dihentikan!</h1>
+                        <p>Bot berhasil logout dari WhatsApp, dan sesi telah dihapus. <a href="/">Kembali ke QR Code</a></p>
+                    </body>
+                </html>
+            `);
         }).catch((err) => {
             console.error('Gagal menghentikan sesi:', err);
             res.send('Gagal menghentikan sesi, coba lagi.');
@@ -122,9 +107,5 @@ app.post('/logout', (req, res) => {
     }
 });
 
-// Mulai bot dan server
-client.initialize().then(() => {
-    app.listen(port, () => {
-        console.log(`Server berjalan di http://localhost:${port}`);
-    });
-});
+// Ubah aplikasi Express agar sesuai dengan serverless
+module.exports.handler = serverless(app); // Tambahkan ini

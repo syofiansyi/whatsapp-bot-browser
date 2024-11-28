@@ -1,3 +1,2 @@
-2024/11/28-15:28:18.222 5fd8 Reusing MANIFEST C:\Users\syofian.irwanda\Music\whatsapp-bot-browser\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
-2024/11/28-15:28:18.253 5fd8 Recovering log #3
-2024/11/28-15:28:18.255 5fd8 Reusing old log C:\Users\syofian.irwanda\Music\whatsapp-bot-browser\.wwebjs_auth\session\Default\Local Storage\leveldb/000003.log 
+2024/11/28-15:36:55.044 6704 Creating DB C:\Users\syofian.irwanda\Music\whatsapp-bot-browser\.wwebjs_auth\session\Default\Local Storage\leveldb since it was missing.
+2024/11/28-15:36:55.087 6704 Reusing MANIFEST C:\Users\syofian.irwanda\Music\whatsapp-bot-browser\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
